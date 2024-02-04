@@ -1,0 +1,15 @@
+{% extends "base.html" %} {%block start%}
+cart
+<div class='container d-flex mt-5 col-6 mx-auto'>
+    {% for f in item %}
+    <div class="card" style="width: 18rem;">
+      <img src="{{f.food.image}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{f.food.name}}</h5>
+        <p class="card-text">{{f.food.cost}}</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div>
+    </div>
+    {% endfor %}
+</div>
+  {% endblock %}

@@ -50,13 +50,23 @@ def register(request):
 
 
 @login_required(login_url="/login/")
-def restaurant(request):
-    return render(request,'menu.html')
+def Menu(request,id):
+    foods=Food.objects.filter(restaurant__id=id)
+    restaurant=Restaurant.objects.filter(id=id)
+    restaurant=restaurant[0]
+    foods={'foods':foods,'restaurant':restaurant}
+    return render(request,'menu.html',foods,)
 
 
 def homepage(request):
+    restaurants=Restaurant.objects.all()
+    restaurants={'restaurants':restaurants}
+    return render(request,'index.html',restaurants)
 
-    return render(request,'index.html')
+def cart(request,id):
+    item=Cart.objects.filter(costomer__id=id)
+    item={'item':item}
+    return render(request,'cart.html',item)
 
 @login_required(login_url="/login/")
 def order_page(request):

@@ -1,15 +1,16 @@
 {% extends "base.html" %} {%block start%}
 
-<div class="container d-flex justify-contect-evenly">
-
-
-<div class="card m-2" style="min-width: 350px; max-width: 650px;">
-  <img src="..." class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">Abc</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="restaurant/abc/" class="btn btn-primary">Go somewhere</a>
+<div class='container d-flex mt-5 col-6 mx-auto'>
+{% for restaurant in restaurants %}
+  <div class="card mx-2" style="width: 18rem;">
+    <img src="Picsart_23-12-25_10-40-44-426.jpg" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{restaurant.name}}</h5>
+      <p class="card-text">{{restaurant.description}}</p>
+      <div>{{restaurant.rating}}</div>
+      <a href="/restaurant/{{restaurant.id}}" class="btn btn-primary">Menu</a>
+    </div>
   </div>
-</div>
+  {% endfor %}
 </div>
   {% endblock %}

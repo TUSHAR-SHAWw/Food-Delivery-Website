@@ -16,12 +16,16 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from Menu.views import * 
-
+from django.conf import settings
+from django.conf.urls.static import static
 urlpatterns = [
     path('',homepage,name='home'),
-    path('restaurant/',restaurant,name='home'),
+    path('restaurant/<id>',Menu,name='home'),
     path('login/',login_page,name='login'),
+    path('cart/<id>',cart,name='cart'),
     path('logout/',logout_page,name='logout'),
     path('register/',register,name='register'),
     path('admin/', admin.site.urls),
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+s=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+print(s)

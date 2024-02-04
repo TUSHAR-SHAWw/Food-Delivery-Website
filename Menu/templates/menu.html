@@ -1,16 +1,33 @@
 {% extends "base.html" %}
 {% block start %}
+{% csrf_token %}
 
-<div class="container d-flex justify-contect-evenly">
+<div class="card" style="width: 18rem;">
+  <img src="{{restaurant.image.url}}" class="card-img-top" alt="{{restaurant.image}}">
+  <div class="card-body">
+    <h5 class="card-title">{{restaurant.name}}</h5>
+    <p class="card-title">{{restaurant.description}}</p>
+  </div>
+</div>
 
+<div class="container d-flex">
 
-    <div class="card m-2" style="min-width: 350px; max-width: 650px;">
-      <img src="..." class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">Abc</h5>
-        <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-        <a href="restaurant/" class="btn btn-primary">Go somewhere</a>
-      </div>
+  {% for food in foods %}
+  <div class="card mx-2" style="width: 18rem;">
+    <img src="{{food.image.url}}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{food.name}}</h5>
+      <p class="card-text">Rs: {{food.cost}}</p>
+    <div class="d-flex ">
+    <button class="btn btn-danger">-</button>
+    <ul class="list-group list-group-horizontal">
+      <li class="list-group-item">0</li>
+    </ul>
+      <button class="btn btn-success">+</button>
     </div>
-    </div>
+  </div>
+</div>
+{% endfor %}
+</div>
+
 {% endblock %}
