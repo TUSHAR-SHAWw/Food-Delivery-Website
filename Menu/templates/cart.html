@@ -3,13 +3,37 @@ cart
 <div class='container d-flex mt-5 col-6 mx-auto'>
     {% for f in item %}
     <div class="card" style="width: 18rem;">
-      <img src="{{f.food.image}}" class="card-img-top" alt="...">
+      <img src="{{f.food.image.url}}" class="card-img-top" alt="...">
       <div class="card-body">
         <h5 class="card-title">{{f.food.name}}</h5>
         <p class="card-text">{{f.food.cost}}</p>
-        <a href="#" class="btn btn-primary">Go somewhere</a>
+        <div class="d-flex">
+          {% csrf_token %}
+          <button
+            class="btn btn-danger"
+            id="myButton"
+            type="submit"
+            onclick="decreaseValue('item{{forloop.counter}}')"
+          >
+            -
+          </button>
+          <ul class="list-group list-group-horizontal">
+            <li id="counterValue" class="list-group-item item{{forloop.counter}}">
+              {{f.quantity}}
+            </li>
+          </ul>
+          <button
+            class="btn btn-success"
+            id="myButton"
+            type="submit"
+            onclick="increaseValue('item{{forloop.counter}}')"
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
     {% endfor %}
 </div>
+
   {% endblock %}

@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import *
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.db.models import Count
 
 def login_page(request):
     if request.method == "POST":
@@ -51,10 +53,20 @@ def register(request):
 
 @login_required(login_url="/login/")
 def Menu(request,id):
+    if request.method=='POST':
+        print('hi')
     foods=Food.objects.filter(restaurant__id=id)
     restaurant=Restaurant.objects.filter(id=id)
     restaurant=restaurant[0]
-    foods={'foods':foods,'restaurant':restaurant}
+    cart_items = {}
+    user=request.user
+    if user.is_authenticated:
+        cart = user.cart
+        cart_items_query = CartItem.objects.filter(cart=cart)
+        for item in cart_items_query:
+            cart_items[item.food_id] = item.quantity 
+
+    foods={'foods':foods,'restaurant':restaurant,'cart_items':cart_items}
     return render(request,'menu.html',foods,)
 
 
@@ -63,10 +75,22 @@ def homepage(request):
     restaurants={'restaurants':restaurants}
     return render(request,'index.html',restaurants)
 
-def cart(request,id):
-    item=Cart.objects.filter(costomer__id=id)
-    item={'item':item}
-    return render(request,'cart.html',item)
+def cart(request):
+    user = request.user
+    try:
+        cart_items = CartItem.objects.filter(cart__user=user)
+    except Cart.DoesNotExist:
+        # Create a new Cart object for the user and save it
+        new_cart = Cart.objects.create(user=request.user)
+        new_cart.save()
+        cart_items = CartItem.objects.filter(cart__user=user)
+    return render(request, 'cart.html', {'item': cart_items})
+
+def card_btn(request):
+    # Your function logic here
+    # For example, you can print a message
+    print("Button clicked!")
+    return JsonResponse({'status': 'success'})
 
 @login_required(login_url="/login/")
 def order_page(request):

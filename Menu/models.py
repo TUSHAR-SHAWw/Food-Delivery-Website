@@ -31,7 +31,13 @@ class Orders(models.Model):
         return str(self.costomer)
     
 class Cart(models.Model):
-    food=models.ForeignKey(Food,related_name='cart_food',on_delete=models.CASCADE)
-    costomer=models.ForeignKey(User,related_name='cart_costomer',on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Food, through='CartItem')
+
     def __str__(self):
-        return str(self.food)
+        return f"Cart for {self.user.username}"
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0)

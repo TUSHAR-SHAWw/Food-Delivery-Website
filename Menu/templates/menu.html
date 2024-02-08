@@ -1,9 +1,12 @@
-{% extends "base.html" %}
-{% block start %}
-{% csrf_token %}
+{% extends "base.html" %} {% block start %} {% csrf_token %}
+{% load custom_filters %}
 
-<div class="card" style="width: 18rem;">
-  <img src="{{restaurant.image.url}}" class="card-img-top" alt="{{restaurant.image}}">
+<div class="card col-6 mx-auto" style="width: 18rem">
+  <img
+    src="{{restaurant.image.url}}"
+    class="card-img-top"
+    alt="{{restaurant.image}}"
+  />
   <div class="card-body">
     <h5 class="card-title">{{restaurant.name}}</h5>
     <p class="card-title">{{restaurant.description}}</p>
@@ -11,23 +14,58 @@
 </div>
 
 <div class="container d-flex">
-
   {% for food in foods %}
-  <div class="card mx-2" style="width: 18rem;">
-    <img src="{{food.image.url}}" class="card-img-top" alt="...">
+  <div class="card mx-2" style="width: 18rem">
+    <img src="{{food.image.url}}" class="card-img-top" alt="..." />
     <div class="card-body">
       <h5 class="card-title">{{food.name}}</h5>
       <p class="card-text">Rs: {{food.cost}}</p>
-    <div class="d-flex ">
-    <button class="btn btn-danger">-</button>
-    <ul class="list-group list-group-horizontal">
-      <li class="list-group-item">0</li>
-    </ul>
-      <button class="btn btn-success">+</button>
+      <div class="d-flex">
+        {% csrf_token %}
+        <button
+          class="btn btn-danger"
+          id="myButton"
+          type="submit"
+          onclick="decreaseValue('item{{forloop.counter}}')"
+        >
+          -
+        </button>
+        <ul class="list-group list-group-horizontal">
+          <li id="counterValue" class="list-group-item item{{forloop.counter}}">
+            {{ cart_items|default_if_none:"0"|get_item:food.id }}
+          </li>
+        </ul>
+        <button
+          class="btn btn-success"
+          id="myButton"
+          type="submit"
+          onclick="increaseValue('item{{forloop.counter}}')"
+        >
+          +
+        </button>
+      </div>
     </div>
   </div>
-</div>
-{% endfor %}
+  {% endfor %}
 </div>
 
-{% endblock %}
+{% comment %}
+<script>
+    document.getElementById('myButton').addEventListener('click', function() {
+      // Make an asynchronous request to the Django view
+      fetch('{% url 'card_btn' %}', {
+          method: 'GET',
+          headers: {
+              'X-Requested-With': 'XMLHttpRequest'
+          }
+      })
+      .then(response => response.json())
+      .then(data => {
+          console.log(data); // Handle the response as needed
+      })
+      .catch(error => {
+          console.error('Error:', error);
+      });
+  });
+</script>
+{% endcomment %} {% endblock %}
