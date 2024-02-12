@@ -86,11 +86,44 @@ def cart(request):
         cart_items = CartItem.objects.filter(cart__user=user)
     return render(request, 'cart.html', {'item': cart_items})
 
-def card_btn(request):
-    # Your function logic here
-    # For example, you can print a message
-    print("Button clicked!")
-    return JsonResponse({'status': 'success'})
+def orders(request):
+    user = request.user
+    cart_items = Orders.objects.filter(orderinfo__costomer=user)
+    return render(request, 'orders.html', {'item': cart_items})
+
+from django.views.decorators.csrf import csrf_exempt
+from .models import Food, Cart, CartItem
+
+@csrf_exempt
+def decrement_url(request):
+    if request.method == 'POST':
+        food_id = request.POST.get('food_id')
+        if food_id:
+            try:
+                food_item = Food.objects.get(pk=food_id)
+                cart_item = CartItem.objects.get(food=food_item, cart=request.user.cart)
+                if cart_item.quantity > 0:
+                    cart_item.quantity -= 1
+                    cart_item.save()
+                    return JsonResponse({'success': True, 'food_id': food_id, 'quantity': cart_item.quantity})
+            except (Food.DoesNotExist, CartItem.DoesNotExist):
+                pass
+    return JsonResponse({'success': False})
+
+@csrf_exempt
+def increment_url(request):
+    if request.method == 'POST':
+        food_id = request.POST.get('food_id')
+        if food_id:
+            try:
+                food_item = Food.objects.get(pk=food_id)
+                cart_item, created = CartItem.objects.get_or_create(food=food_item, cart=request.user.cart)
+                cart_item.quantity += 1
+                cart_item.save()
+                return JsonResponse({'success': True, 'food_id': food_id, 'quantity': cart_item.quantity})
+            except Food.DoesNotExist:
+                pass
+    return JsonResponse({'success': False})
 
 @login_required(login_url="/login/")
 def order_page(request):

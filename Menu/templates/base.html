@@ -36,6 +36,9 @@
           <li class="nav-item">
             <a class="nav-link mx-2 navtext text-light" href="/cart/"><i class="fas fa-heart pe-2"></i>Cart</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link mx-2 navtext text-light" href="/orders/"><i class="fas fa-heart pe-2"></i>Orders</a>
+          </li>
           <li class="nav-item ms-3">
             <form class="form-inline" method="POST">
                 {%if request.user.is_authenticated %}
@@ -51,6 +54,6 @@
   </nav>
     {% block start%}
     {% endblock%}
+    {% comment %} <script src="{% static 'js/script.js' %}"></script> {% endcomment %}
 </body>
-<script src="{% static 'js/script.js' %}"></script>
 </html>

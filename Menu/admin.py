@@ -8,4 +8,6 @@ admin.site.register(Food)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 
+admin.site.register(OrderInfo)
+
 admin.site.register(Orders)

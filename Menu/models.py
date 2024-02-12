@@ -22,13 +22,20 @@ class Food(models.Model):
     def __str__(self):
         return self.name
 
-class Orders(models.Model):
-    food=models.ForeignKey(Food,related_name='food_name',on_delete=models.CASCADE)
-    costomer=models.ForeignKey(User,related_name='costomer_name',on_delete=models.CASCADE)
+class OrderInfo(models.Model):
+    costomer=models.ForeignKey(User,related_name='order_costomer_name',on_delete=models.CASCADE)
+    Name=models.CharField(max_length=20,null=True,blank=True)
     location=models.CharField(max_length=250,null=True,blank=True)
     phone=models.IntegerField(null=True,blank=True)
+
+
+class Orders(models.Model):
+    orderinfo=models.ForeignKey(OrderInfo,related_name='orderinfo',on_delete=models.CASCADE)
+    food=models.ForeignKey(Food,related_name='food_name',on_delete=models.CASCADE)
+    quantity=models.IntegerField(default=0)
+    total=models.FloatField(default=0)
     def __str__(self):
-        return str(self.costomer)
+        return str(self.food)
     
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
