@@ -1,24 +1,24 @@
-{% extends "base.html" %} {%block start%}
-cart
-<div class='container d-flex mt-5 col-6 mx-auto'>
-    {% for f in item %}
+{% extends "base.html" %}
+
+{% block start %}
+<div class="container">
+  <h1>Cart</h1>
+  <div class='container d-flex mt-5 col-6 mx-auto'>
+    {% for order in orders %}
     <div class="card" style="width: 18rem;">
-      <img src="{{f.food.image.url}}" class="card-img-top" alt="...">
+      <img src="{{ order.order_info.image.url }}" class="card-img-top" alt="...">
       <div class="card-body">
-        <h5 class="card-title">{{f.food.name}}</h5>
-        <p class="card-text">{{f.food.cost}}</p>
+        <h5 class="card-title">{{ order.order_info.customer }}</h5>
+        <p class="card-text">{{ order.date_created }}</p>
         <div class="d-flex">
-          {% csrf_token %}
-          
           <ul class="list-group list-group-horizontal">
-            <li id="counterValue" class="list-group-item item{{forloop.counter}}">
-              {{f.quantity}}
-            </li>
+            <li class="list-group-item">{{ order.total }}</li>
           </ul>
         </div>
+        <a href="/order_details/{{order.id}}" class="btn btn-primary">View Details</a>
       </div>
     </div>
     {% endfor %}
+  </div>
 </div>
-
-  {% endblock %}
+{% endblock %}

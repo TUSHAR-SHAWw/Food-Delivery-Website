@@ -1,39 +1,73 @@
-{% extends "base.html" %} {%block start%}
-cart
-<div class='container d-flex mt-5 col-6 mx-auto'>
+{% extends "base.html" %}
+
+{% block start %}
+  <div class="container d-flex mt-5 col-6 mx-auto">
     {% for f in item %}
-    <div class="card" style="width: 18rem;">
-      <img src="{{f.food.image.url}}" class="card-img-top" alt="...">
-      <div class="card-body">
-        <h5 class="card-title">{{f.food.name}}</h5>
-        <p class="card-text">{{f.food.cost}}</p>
-        <div class="d-flex">
-          {% csrf_token %}
-          <button
-            class="btn btn-danger"
-            id="myButton"
-            type="submit"
-            onclick="decreaseValue('item{{forloop.counter}}')"
-          >
-            -
-          </button>
-          <ul class="list-group list-group-horizontal">
-            <li id="counterValue" class="list-group-item item{{forloop.counter}}">
-              {{f.quantity}}
-            </li>
-          </ul>
-          <button
-            class="btn btn-success"
-            id="myButton"
-            type="submit"
-            onclick="increaseValue('item{{forloop.counter}}')"
-          >
-            +
-          </button>
+      <div class="card" style="width: 18rem;">
+        <img src="{{ f.food.image.url }}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title">{{ f.food.name }}</h5>
+          <p class="card-text">{{ f.food.cost }}</p>
+          <div class="d-flex">
+            {% csrf_token %}
+            <button class="btn btn-danger decrement-btn" data-item-id="{{ f.food.id }}">-</button>
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item item{{ forloop.counter }}">{{ f.quantity }}</li>
+            </ul>
+            <button class="btn btn-success increment-btn" data-item-id="{{ f.food.id }}">+</button>
+          </div>
         </div>
       </div>
-    </div>
     {% endfor %}
-</div>
+  </div>
 
-  {% endblock %}
+  <form id="order-form" action="{% url 'create_order' %}" method="post" style="text-align: center;">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Place Order</button>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      $(".decrement-btn").click(function() {
+        var itemId = $(this).data("item-id");
+        var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+          type: "POST",
+          url: "/decrement_url/",
+          data: {
+            food_id: itemId,
+            csrfmiddlewaretoken: csrfToken
+          },
+          success: function(response) {
+            if (response.success) {
+              updateQuantity(itemId, response.quantity);
+            }
+          }
+        });
+      });
+
+      $(".increment-btn").click(function() {
+        var itemId = $(this).data("item-id");
+        var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+          type: "POST",
+          url: "/increment_url/",
+          data: {
+            food_id: itemId,
+            csrfmiddlewaretoken: csrfToken
+          },
+          success: function(response) {
+            if (response.success) {
+              updateQuantity(itemId, response.quantity);
+            }
+          }
+        });
+      });
+
+      function updateQuantity(itemId, quantity) {
+        $(".item" + itemId).text(quantity);
+      }
+    });
+  </script>
+{% endblock %}

@@ -16,33 +16,19 @@
 <div class="container d-flex">
   {% for food in foods %}
   <div class="card mx-2" style="width: 18rem">
-    <img src="{{food.image.url}}" class="card-img-top" alt="..." />
+    <img src="{{ food.image.url }}" class="card-img-top" alt="..." />
     <div class="card-body">
-      <h5 class="card-title">{{food.name}}</h5>
-      <p class="card-text">Rs: {{food.cost}}</p>
+      <h5 class="card-title">{{ food.name }}</h5>
+      <p class="card-text">Rs: {{ food.cost }}</p>
       <div class="d-flex">
         {% csrf_token %}
-        <button
-          class="btn btn-danger"
-          id="myButton{{forloop.counter}}"
-          type="submit"
-          onclick="decreaseValue('item{{forloop.counter}}')"
-        >
-          -
-        </button>
+        <button class="btn btn-danger decrement-btn" data-food-id="{{ food.id }}">-</button>
         <ul class="list-group list-group-horizontal">
-          <li id="counterValue" class="list-group-item item{{forloop.counter}}">
-            {{ cart_items|default_if_none:"0"|get_item:food.id }}
-          </li>
+          <li class="list-group-item item{{ forloop.counter }}">
+            {{ cart_items|get_item:food.id|default:"0" }}
+          </li>     
         </ul>
-        <button
-          class="btn btn-success"
-          id="myButton{{forloop.counter}}"
-          type="submit"
-          onclick="increaseValue('item{{forloop.counter}}')"
-        >
-          +
-        </button>
+        <button class="btn btn-success increment-btn" data-food-id="{{ food.id }}">+</button>
       </div>
     </div>
   </div>
@@ -52,46 +38,46 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function() {
-    {% for food in foods %}
-      // Decrement button
-      $("#decrementButton{{ forloop.counter }}").click(function() {
-        $.ajax({
-          type: "POST",
-          url: "{% url 'decrement_url' %}",
-          data: {
-            food_id: {{ food.id }},
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-          },
-          success: function(response) {
-            if (response.success) {
-              updateCounter(response.food_id, response.quantity);
-            }
+    $(".decrement-btn").click(function() {
+      var foodId = $(this).data("food-id");
+      var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
+      $.ajax({
+        type: "POST",
+        url: "/decrement_url/",
+        data: {
+          food_id: foodId,
+          csrfmiddlewaretoken: csrfToken
+        },
+        success: function(response) {
+          if (response.success) {
+            updateCounter(foodId, response.quantity);
           }
-        });
+        }
       });
+    });
 
-      // Increment button
-      $("#incrementButton{{ forloop.counter }}").click(function() {
-        $.ajax({
-          type: "POST",
-          url: "{% url 'increment_url' %}",
-          data: {
-            food_id: {{ food.id }},
-            csrfmiddlewaretoken: '{{ csrf_token }}'
-          },
-          success: function(response) {
-            if (response.success) {
-              updateCounter(response.food_id, response.quantity);
-            }
+    $(".increment-btn").click(function() {
+      var foodId = $(this).data("food-id");
+      var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
+      $.ajax({
+        type: "POST",
+        url: "/increment_url/",
+        data: {
+          food_id: foodId,
+          csrfmiddlewaretoken: csrfToken
+        },
+        success: function(response) {
+          if (response.success) {
+            updateCounter(foodId, response.quantity);
           }
-        });
+        }
       });
+    });
 
-      // Update counter function
-      function updateCounter(food_id, quantity) {
-        $(".item{{ forloop.counter }}").text(quantity);
-      }
-    {% endfor %}
+    function updateCounter(foodId, quantity) {
+      $(".item" + foodId).text(quantity);
+    }
   });
 </script>
+
 {% endblock %}

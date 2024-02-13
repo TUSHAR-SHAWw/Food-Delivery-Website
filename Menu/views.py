@@ -1,4 +1,6 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render ,redirect
+from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
@@ -61,7 +63,13 @@ def Menu(request,id):
     cart_items = {}
     user=request.user
     if user.is_authenticated:
-        cart = user.cart
+        user = request.user
+    # Ensure that the user has a cart
+        if not hasattr(user, 'cart'):
+        # Create a cart for the user
+            cart = Cart.objects.create(user=user)
+        else:
+            cart = user.cart
         cart_items_query = CartItem.objects.filter(cart=cart)
         for item in cart_items_query:
             cart_items[item.food_id] = item.quantity 
@@ -78,53 +86,139 @@ def homepage(request):
 def cart(request):
     user = request.user
     try:
-        cart_items = CartItem.objects.filter(cart__user=user)
+        cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
     except Cart.DoesNotExist:
         # Create a new Cart object for the user and save it
         new_cart = Cart.objects.create(user=request.user)
         new_cart.save()
-        cart_items = CartItem.objects.filter(cart__user=user)
+        cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
     return render(request, 'cart.html', {'item': cart_items})
 
 def orders(request):
     user = request.user
-    cart_items = Orders.objects.filter(orderinfo__costomer=user)
-    return render(request, 'orders.html', {'item': cart_items})
+    print(user.id)
+    # Retrieve orders for the current user
+    orders = Orders.objects.filter(order_info__customer=user)
+    print(orders)
+    return render(request, 'orders.html', {'orders': orders})
 
-from django.views.decorators.csrf import csrf_exempt
-from .models import Food, Cart, CartItem
 
+# CSRF-exempt decorator is used to allow AJAX requests without CSRF tokens
 @csrf_exempt
-def decrement_url(request):
+def decrement_quantity(request):
+    # Check if the request method is POST
     if request.method == 'POST':
+        # Retrieve the food ID from the POST data
         food_id = request.POST.get('food_id')
         if food_id:
             try:
+                # Get the Food object based on the food ID
                 food_item = Food.objects.get(pk=food_id)
+                # Get the corresponding CartItem for the food item in the user's cart
                 cart_item = CartItem.objects.get(food=food_item, cart=request.user.cart)
+                # If the quantity is greater than 0, decrement the quantity by 1
                 if cart_item.quantity > 0:
                     cart_item.quantity -= 1
+                    # Save the updated cart item
                     cart_item.save()
+                    # Return a JSON response indicating success along with the updated quantity
                     return JsonResponse({'success': True, 'food_id': food_id, 'quantity': cart_item.quantity})
             except (Food.DoesNotExist, CartItem.DoesNotExist):
                 pass
+    # If the request method is not POST or an error occurs, return a JSON response indicating failure
     return JsonResponse({'success': False})
 
+
 @csrf_exempt
-def increment_url(request):
+def increment_quantity(request):
+    # Check if the request method is POST
     if request.method == 'POST':
+        # Retrieve the food ID from the POST data
         food_id = request.POST.get('food_id')
         if food_id:
             try:
+                # Get the Food object based on the food ID
                 food_item = Food.objects.get(pk=food_id)
+                # Get or create the CartItem for the food item in the user's cart
                 cart_item, created = CartItem.objects.get_or_create(food=food_item, cart=request.user.cart)
+                # Increment the quantity by 1
                 cart_item.quantity += 1
+                # Save the updated cart item
                 cart_item.save()
+                # Return a JSON response indicating success along with the updated quantity
                 return JsonResponse({'success': True, 'food_id': food_id, 'quantity': cart_item.quantity})
             except Food.DoesNotExist:
                 pass
+    # If the request method is not POST or an error occurs, return a JSON response indicating failure
     return JsonResponse({'success': False})
 
 @login_required(login_url="/login/")
-def order_page(request):
-    return render(request,'order.html')
+def create_order_from_cart(request):
+    user = request.user
+    # Retrieve cart items for the current user
+    cart_items = CartItem.objects.filter(cart__user=user)
+
+    order_items = []
+    total_cost = 0
+
+    # Create order items for each cart item
+    for cart_item in cart_items:
+        food = cart_item.food
+        quantity = cart_item.quantity
+        cost = food.cost
+        total_cost += quantity * cost
+
+        # Create order item
+        order_items.append(OrderItem(
+            food=food,
+            quantity=quantity
+        ))
+
+    # Create the order info
+    order_info = OrderInfo.objects.create(
+        customer=user
+        # You may add more fields here like name, location, phone, etc.
+    )
+
+    # Create the order
+    order = Orders.objects.create(
+        order_info=order_info,
+        total=total_cost
+    )
+
+    # Associate order items with the order
+    for order_item in order_items:
+        order_item.order = order
+        order_item.save()
+
+    # Calculate total for the order
+    order.calculate_total()
+
+    # Return the created order
+    return order
+
+def create_order(request):
+    # Create order from cart
+    order = create_order_from_cart(request)
+
+    # Redirect to orders page
+    return redirect(reverse('orders'))
+
+def order_details(request, id):
+    # Retrieve the order based on the order_id
+    order = Orders.objects.get(id=id)
+
+    # Access related information
+    order_info = order.order_info
+    customer = order_info.customer
+    order_items = order.order_items.all()  # Access all related order items
+    total_cost = order.total
+
+    # Render the template with the retrieved data
+    return render(request, 'order_details.html', {
+        'order': order,
+        'order_info': order_info,
+        'customer': customer,
+        'order_items': order_items,
+        'total_cost': total_cost
+    })

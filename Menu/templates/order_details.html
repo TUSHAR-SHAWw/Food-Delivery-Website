@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+</head>
+<body>
+    <h1>Order Details</h1>
+
+    <h2>Order Information</h2>
+    <p><strong>Order ID:</strong> {{ order.id }}</p>
+    <p><strong>Customer Name:</strong> {{ customer.username }}</p> <!-- Assuming customer has a username field -->
+    <p><strong>Customer Email:</strong> {{ customer.email }}</p> <!-- Assuming customer has an email field -->
+    <p><strong>Location:</strong> {{ order_info.location }}</p>
+    <p><strong>Phone:</strong> {{ order_info.phone }}</p>
+
+    <h2>Ordered Items</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Food</th>
+                <th>Quantity</th>
+                <th>Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order_item in order_items %}
+            <tr>
+                <td>{{ order_item.food.name }}</td>
+                <td>{{ order_item.quantity }}</td>
+                <td>{{ order_item.calculate_item_total }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><strong>Total Cost:</strong> {{ total_cost }}</p>
+
+</body>
+</html>
