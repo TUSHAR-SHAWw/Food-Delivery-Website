@@ -22,15 +22,21 @@ urlpatterns = [
     path('',homepage,name='home'),
     path('restaurant/<id>',Menu,name='home'),
     path('login/',login_page,name='login'),
-    path('cart/',cart,name='cart'),
-    path('create_order/',create_order,name='create_order'),
-    path('orders/',orders,name='orders'),
-    path('order_details/<id>',order_details,name='order_details'),
-    path('increment_url/',increment_quantity,name='increment_url'),
-    path('decrement_url/',decrement_quantity,name='decrement_url'),
     path('logout/',logout_page,name='logout'),
     path('register/',register,name='register'),
     path('admin/', admin.site.urls),
+
+    path('cart/',cart,name='cart'),
+    path('increment_url/',increment_quantity,name='increment_url'),
+    path('decrement_url/',decrement_quantity,name='decrement_url'),
+
+    path('create_order/',create_order,name='create_order'),
+    path('orders/',orders,name='orders'),
+    path('order_details/<id>',order_details,name='order_details'),
+
+    path('add_details/',add_details,name='add_details'),
+    path('add_details/<int:order_id>/edit/', edit_order, name='edit-order'),
+
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 s=static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 print(s)

@@ -20,12 +20,18 @@
       </div>
     {% endfor %}
   </div>
-
-  <form id="order-form" action="{% url 'create_order' %}" method="post" style="text-align: center;">
+{% if item %}
+  <form id="order-form" action="{% url 'add_details' %}" method="post" style="text-align: center;">
     {% csrf_token %}
     <button type="submit" class="btn btn-primary">Place Order</button>
   </form>
-
+{% else  %}
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh;"> <!-- Centering the heading when the cart is empty -->
+  <div class="text-center">
+    <h1>Cart is Empty</h1>
+  </div>
+</div>
+{% endif %}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).ready(function() {

@@ -2,20 +2,25 @@
 
 {% block start %}
 <div class="container">
-  <h1>Cart</h1>
-  <div class='container d-flex mt-5 col-6 mx-auto'>
+  <h1 class="h1 text-center text-md-left mb-4 mt-4">My Orders</h1>
+  <div class="container-fluid d-flex flex-wrap">
     {% for order in orders %}
-    <div class="card" style="width: 18rem;">
-      <img src="{{ order.order_info.image.url }}" class="card-img-top" alt="...">
+    <div class="card m-2" style="width: 18rem;">
+      
       <div class="card-body">
         <h5 class="card-title">{{ order.order_info.customer }}</h5>
         <p class="card-text">{{ order.date_created }}</p>
-        <div class="d-flex">
-          <ul class="list-group list-group-horizontal">
-            <li class="list-group-item">{{ order.total }}</li>
+        <div class="d-flex ">
+          <ul class="list-group ">
+            <li class="list-group-item">Rs:{{ order.total }}</li>
           </ul>
         </div>
-        <a href="/order_details/{{order.id}}" class="btn btn-primary">View Details</a>
+        <div class="d-flex ">
+          <ul class="list-group ">
+            <li class="list-group-item">Status: {{ order.status }}</li>
+          </ul>
+        </div>
+        <a href="{% url 'order_details' order.id %}" class="btn btn-primary mt-2 w-100">View Details</a>
       </div>
     </div>
     {% endfor %}

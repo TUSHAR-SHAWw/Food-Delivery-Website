@@ -1,5 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render ,redirect
+from django.shortcuts import render ,redirect,get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,login,logout
@@ -9,6 +9,7 @@ from .models import *
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.db.models import Count
+from django import forms
 
 def login_page(request):
     if request.method == "POST":
@@ -83,6 +84,7 @@ def homepage(request):
     restaurants={'restaurants':restaurants}
     return render(request,'index.html',restaurants)
 
+@login_required(login_url="/login/")
 def cart(request):
     user = request.user
     try:
@@ -94,6 +96,7 @@ def cart(request):
         cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
     return render(request, 'cart.html', {'item': cart_items})
 
+@login_required(login_url="/login/")
 def orders(request):
     user = request.user
     print(user.id)
@@ -175,15 +178,14 @@ def create_order_from_cart(request):
         ))
 
     # Create the order info
-    order_info = OrderInfo.objects.create(
-        customer=user
-        # You may add more fields here like name, location, phone, etc.
-    )
-
+    info_id = request.POST.get('chosen_order')
+    print(info_id)
+    order_info=OrderInfo.objects.get(pk=info_id)
     # Create the order
     order = Orders.objects.create(
         order_info=order_info,
-        total=total_cost
+        total=total_cost,
+        status="Pending"
     )
 
     # Associate order items with the order
@@ -193,10 +195,13 @@ def create_order_from_cart(request):
 
     # Calculate total for the order
     order.calculate_total()
-
+    for cart_item in cart_items:
+        cart_item.quantity=0
+        cart_item.save()
     # Return the created order
     return order
 
+@login_required(login_url="/login/")
 def create_order(request):
     # Create order from cart
     order = create_order_from_cart(request)
@@ -204,6 +209,7 @@ def create_order(request):
     # Redirect to orders page
     return redirect(reverse('orders'))
 
+@login_required(login_url="/login/")
 def order_details(request, id):
     # Retrieve the order based on the order_id
     order = Orders.objects.get(id=id)
@@ -222,3 +228,28 @@ def order_details(request, id):
         'order_items': order_items,
         'total_cost': total_cost
     })
+
+@login_required(login_url="/login/")
+def add_details(request):
+    user=request.user
+    infos=OrderInfo.objects.filter(customer=user)
+    infos={'infos':infos}
+    return render(request,'add_details.html',infos)
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = OrderInfo
+        fields = ['customer', 'name', 'location', 'phone']
+
+@login_required(login_url="/login/")
+def edit_order(request, order_id):
+    order = get_object_or_404(OrderInfo, pk=order_id)
+    if request.method == 'POST':
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect('add_details')
+    else:
+        form = OrderForm(instance=order)
+    return render(request, 'edit_order.html', {'form': form})

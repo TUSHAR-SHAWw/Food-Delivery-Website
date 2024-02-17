@@ -34,6 +34,7 @@ class Orders(models.Model):
     foods = models.ManyToManyField(Food, related_name='orders', through='OrderItem')
     total = models.FloatField(default=0)
     date_created=models.DateField(auto_now=False, auto_now_add=True)
+    status=models.CharField(max_length=10,default='Pending')
     def __str__(self):
         return f"Order {self.id}"
 
