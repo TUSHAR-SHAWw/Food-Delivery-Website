@@ -1,83 +1,89 @@
 {% extends "base.html" %} {% block start %} {% csrf_token %}
 {% load custom_filters %}
-
-<div class="card col-6 mx-auto" style="width: 18rem">
-  <img
-    src="{{restaurant.image.url}}"
-    class="card-img-top"
-    alt="{{restaurant.image}}"
-  />
-  <div class="card-body">
-    <h5 class="card-title">{{restaurant.name}}</h5>
-    <p class="card-title">{{restaurant.description}}</p>
-  </div>
-</div>
-
-<div class="container d-flex">
-  {% for food in foods %}
-  <div class="card mx-2" style="width: 18rem">
-    <img src="{{ food.image.url }}" class="card-img-top" alt="..." />
-    <div class="card-body">
-      <h5 class="card-title">{{ food.name }}</h5>
-      <p class="card-text">Rs: {{ food.cost }}</p>
-      <div class="d-flex">
-        {% csrf_token %}
-        <button class="btn btn-danger decrement-btn" data-food-id="{{ food.id }}">-</button>
-        <ul class="list-group list-group-horizontal">
-          <li class="list-group-item item{{ forloop.counter }}">
-            {{ cart_items|get_item:food.id|default:"0" }}
-          </li>     
-        </ul>
-        <button class="btn btn-success increment-btn" data-food-id="{{ food.id }}">+</button>
+<div class="container py-5">
+    <div class="row d-flex justify-content-center">
+      <div class="card col-6 mx-auto" style="width: 18rem">
+        <img src="{{ restaurant.image.url }}" class="card-img-top" alt="{{ restaurant.image }}" />
+        <div class="card-body">
+          <h5 class="card-title">{{ restaurant.name }}</h5>
+          <p class="card-text">{{ restaurant.description }}</p>
       </div>
     </div>
   </div>
-  {% endfor %}
-</div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <div class="row d-flex justify-content-center">
+        {% for food in foods %}
+          <div class="col-lg-3 col-md-4 col-sm-6 mt-4">
+            <div class="card shadow" style="width: 18rem">
+              <img src="{{ food.image.url }}" class="card-img-top" alt="..." />
+              <div class="card-body text-center">
+                <h5 class="card-title">{{ food.name }}</h5>
+                <p class="card-text">Rs: {{ food.cost }}</p>
+                <div class="d-flex justify-content-center">
+                  {% csrf_token %}
+                  <button class="btn btn-danger decrement-btn" data-food-id="{{ food.id }}">-</button>
+                  <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item item{{ food.id }}">
+                      {{ cart_items|get_item:food.id|default:"0" }}
+                    </li>
+                </ul>
+                  <button class="btn btn-success increment-btn" data-food-id="{{ food.id }}">+</button>
+              </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+  </div>
+</div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function() {
     $(".decrement-btn").click(function() {
-      var foodId = $(this).data("food-id");
-      var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
-      $.ajax({
-        type: "POST",
-        url: "/decrement_url/",
-        data: {
-          food_id: foodId,
-          csrfmiddlewaretoken: csrfToken
-        },
-        success: function(response) {
-          if (response.success) {
-            updateCounter(foodId, response.quantity);
-          }
-        }
-      });
+        var foodId = $(this).data("food-id");
+        var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+            type: "POST",
+            url: "/decrement_url/",
+            data: {
+                food_id: foodId,
+                csrfmiddlewaretoken: csrfToken
+            },
+            success: function(response) {
+                console.log(response); // Check response from server
+                if (response.success) {
+                    updateCounter(foodId, response.quantity);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText); // Log any errors
+            }
+        });
     });
-
-    $(".increment-btn").click(function() {
-      var foodId = $(this).data("food-id");
-      var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
-      $.ajax({
-        type: "POST",
-        url: "/increment_url/",
-        data: {
-          food_id: foodId,
-          csrfmiddlewaretoken: csrfToken
-        },
-        success: function(response) {
-          if (response.success) {
-            updateCounter(foodId, response.quantity);
-          }
-        }
-      });
+        $(".increment-btn").click(function() {
+        var foodId = $(this).data("food-id");
+        var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
+        $.ajax({
+            type: "POST",
+            url: "/increment_url/",
+            data: {
+                food_id: foodId,
+                csrfmiddlewaretoken: csrfToken
+            },
+            success: function(response) {
+                console.log(response); // Check response from server
+                if (response.success) {
+                    updateCounter(foodId, response.quantity);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText); // Log any errors
+            }
+        });
     });
-
-    function updateCounter(foodId, quantity) {
-      $(".item" + foodId).text(quantity);
+        function updateCounter(foodId, quantity) {
+        console.log("Updating counter for food ID " + foodId + " with quantity " + quantity);
+        $(".item" + foodId).text(quantity);
     }
-  });
+});
 </script>
-
 {% endblock %}

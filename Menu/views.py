@@ -101,7 +101,8 @@ def orders(request):
     user = request.user
     print(user.id)
     # Retrieve orders for the current user
-    orders = Orders.objects.filter(order_info__customer=user)
+    orders = Orders.objects.filter(order_info__customer=user).order_by('-date_created')
+
     print(orders)
     return render(request, 'orders.html', {'orders': orders})
 

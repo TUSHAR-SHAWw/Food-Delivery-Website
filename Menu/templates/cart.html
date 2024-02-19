@@ -10,11 +10,11 @@
           <p class="card-text">{{ f.food.cost }}</p>
           <div class="d-flex">
             {% csrf_token %}
-            <button class="btn btn-danger decrement-btn" data-item-id="{{ f.food.id }}">-</button>
+            <button class="btn btn-danger decrement-btn" data-food-id="{{ f.food.id }}">-</button>
             <ul class="list-group list-group-horizontal">
-              <li class="list-group-item item{{ forloop.counter }}">{{ f.quantity }}</li>
+              <li class="list-group-item item{{ f.food.id }}">{{ f.quantity }}</li>
             </ul>
-            <button class="btn btn-success increment-btn" data-item-id="{{ f.food.id }}">+</button>
+            <button class="btn btn-success increment-btn" data-food-id="{{ f.food.id }}">+</button>
           </div>
         </div>
       </div>
@@ -36,44 +36,53 @@
   <script>
     $(document).ready(function() {
       $(".decrement-btn").click(function() {
-        var itemId = $(this).data("item-id");
+        var foodId = $(this).data("food-id");
         var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
         $.ajax({
           type: "POST",
           url: "/decrement_url/",
           data: {
-            food_id: itemId,
+            food_id: foodId,
             csrfmiddlewaretoken: csrfToken
           },
           success: function(response) {
+            console.log(response); // Check response from server
             if (response.success) {
-              updateQuantity(itemId, response.quantity);
+                updateCounter(foodId, response.quantity);
             }
-          }
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText); // Log any errors
+        }
         });
       });
 
       $(".increment-btn").click(function() {
-        var itemId = $(this).data("item-id");
+        var foodId = $(this).data("food-id");
         var csrfToken = $("input[name='csrfmiddlewaretoken']").val();
         $.ajax({
           type: "POST",
           url: "/increment_url/",
           data: {
-            food_id: itemId,
+            food_id: foodId,
             csrfmiddlewaretoken: csrfToken
           },
           success: function(response) {
+            console.log(response); // Check response from server
             if (response.success) {
-              updateQuantity(itemId, response.quantity);
+                updateCounter(foodId, response.quantity);
             }
-          }
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText); // Log any errors
+        }
         });
       });
 
-      function updateQuantity(itemId, quantity) {
-        $(".item" + itemId).text(quantity);
-      }
-    });
+      function updateCounter(foodId, quantity) {
+        console.log("Updating counter for food ID " + foodId + " with quantity " + quantity);
+        $(".item" + foodId).text(quantity);
+    }
+});
   </script>
 {% endblock %}
