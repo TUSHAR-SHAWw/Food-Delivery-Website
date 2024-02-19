@@ -72,7 +72,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'food_delivery.wsgi.application'
 
-
+DATABASES = {
+ 	'default': {
+ 		'ENGINE': 'django.db.backends.mysql',
+		'NAME': 'ba5iulknvgkrgojw42mu',
+		'USER': 'ummuopbzfivafjht',
+		'PASSWORD': 'fZ1KDUH3oIuUvX5BF6b2',
+		'HOST':'ba5iulknvgkrgojw42mu-mysql.services.clever-cloud.com',
+ 	    'PORT':'3306',
+ 	}
+}
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
