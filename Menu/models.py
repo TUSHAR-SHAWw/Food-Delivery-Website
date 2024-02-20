@@ -13,10 +13,15 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
 
+class Category(models.Model):
+    catagory=models.CharField(max_length=50)
+    def __str__(self):
+        return self.catagory
+
 class Food(models.Model):
     restaurant=models.ForeignKey(Restaurant,related_name='restaurant_name',on_delete=models.CASCADE)
     name=models.CharField(max_length=50)
-    catagory=models.CharField(max_length=50)
+    catagory=models.ForeignKey(Category,related_name='category',on_delete=models.CASCADE)
     cost=models.FloatField()
     image=models.ImageField(upload_to='food_images')
     def __str__(self):

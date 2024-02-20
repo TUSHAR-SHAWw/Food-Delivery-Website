@@ -1,12 +1,18 @@
 :root {
   --bs-body-bg: #ff0000; /* Change to your desired background color */
 }
+body {
+  min-height: 100vh; /* Set minimum height to viewport height */
+}
 .body {
   overflow: hidden;
   background-color: linear-gradient(to right, #6c5ce7, #975fea, #d65db1);
   font-family: "Montserrat", sans-serif;
 }
-
+.filler-container {
+  flex: 1;
+  height: 500px;
+}
 .card-body {
   padding: 1rem;
 }

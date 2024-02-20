@@ -160,7 +160,7 @@ def increment_quantity(request):
 def create_order_from_cart(request):
     user = request.user
     # Retrieve cart items for the current user
-    cart_items = CartItem.objects.filter(cart__user=user)
+    cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
 
     order_items = []
     total_cost = 0
