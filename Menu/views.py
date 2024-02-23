@@ -56,26 +56,21 @@ def register(request):
 
 @login_required(login_url="/login/")
 def Menu(request,id):
-    if request.method=='POST':
-        print('hi')
     foods=Food.objects.filter(restaurant__id=id)
-    restaurant=Restaurant.objects.filter(id=id)
-    restaurant=restaurant[0]
+    restaurant=Restaurant.objects.filter(id=id)#only for the restaurant card
+    restaurant=restaurant[0]#only for the restaurant card
+    category=Category.objects.all()
     cart_items = {}
-    user=request.user
+    user = request.user
     if user.is_authenticated:
-        user = request.user
-    # Ensure that the user has a cart
-        if not hasattr(user, 'cart'):
-        # Create a cart for the user
-            cart = Cart.objects.create(user=user)
-        else:
-            cart = user.cart
-        cart_items_query = CartItem.objects.filter(cart=cart)
+        cart_items_query = CartItem.objects.filter(cart__user=user)
         for item in cart_items_query:
             cart_items[item.food_id] = item.quantity 
-
-    foods={'foods':foods,'restaurant':restaurant,'cart_items':cart_items}
+    
+    if request.method=='POST':
+        category_name = request.POST.get('category_id')
+        foods=Food.objects.filter(restaurant__id=id,catagory__catagory__icontains=category_name)
+    foods={'foods':foods,'restaurant':restaurant,'cart_items':cart_items,'category':category}
     return render(request,'menu.html',foods,)
 
 

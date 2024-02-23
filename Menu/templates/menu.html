@@ -7,10 +7,29 @@
         <div class="card-body">
           <h5 class="card-title">{{ restaurant.name }}</h5>
           <p class="card-text">{{ restaurant.description }}</p>
-      </div>
+        </div>
     </div>
   </div>
-
+</div>
+<div class="container rounded-4 p-3 bg-warning d-flex no-wrap mt-4 justify-content-evenly">
+  <button class=" btn btn-lg border border-secondary-subtle  btn-light">Filters:</button>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="category_id" value="">
+  <button class="btn btn-success btn-lg border border-light border-4 text-light mx-2" type=submit>
+    All
+  </button>
+</form>
+  {% for c in category%}
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="category_id" value="{{ c }}">
+  <button class="btn btn-success btn-lg border border-light border-4 text-light mx-2" type=submit>
+    {{c}}
+  </button>
+</form>
+  {%endfor%}
+</div>
   <div class="row d-flex justify-content-center">
         {% for food in foods %}
           <div class="col-lg-3 col-md-4 col-sm-6 mt-4">
@@ -18,7 +37,7 @@
               <img src="{{ food.image.url }}" class="card-img-top" alt="..." />
               <div class="card-body text-center">
                 <h5 class="card-title">{{ food.name }}</h5>
-                <p class="card-text">Rs: {{ food.cost }}</p>
+                <p class="card-text">Rs: {{ food.cost }}{{food.catagory}}</p>
                 <div class="d-flex justify-content-center">
                   {% csrf_token %}
                   <button class="btn btn-danger decrement-btn" data-food-id="{{ food.id }}">-</button>

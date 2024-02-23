@@ -10,30 +10,19 @@
     />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" type="text/css" src="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}?{% now "U" %}" />
+  
 
     <title>Recipe Website</title>
   </head>
 
-  <body
-    class="body"
-    style="
-      background-color: #85ffbd;
-      background-image: linear-gradient(
-        199deg,
-        #85ffbd 0%,
-        #fffb7d 50%,
-        #6ff274 100%
-      );
-      min-height: 100vh;
-    "
-  >
+  <body>
     <nav class="navbar navbar-expand-lg bg-dark navbar-light">
       <div class="container d-flex justify-content-between">
         <a class="navbar-brand" href="/recipe/"
           ><img
             id="logo"
-            src="{% static 'logo.png' %}"
+            src="{% static 'css/logoo.png' %}"
             alt="Logo"
             draggable="false"
             height="30"
@@ -108,4 +97,7 @@
     </footer>
     <script src="{% static 'js/script.js' %}"></script>
   </body>
+  <style>
+    
+  </style>
 </html>
