@@ -22,3 +22,7 @@ body{
   justify-content: space-evenly;
 
 }
+.star-rating {
+  color: gold; /* Set the color to gold */
+  font-size: 24px; /* Set the font size to make the stars larger */
+}

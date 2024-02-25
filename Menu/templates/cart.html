@@ -17,6 +17,9 @@
         </ul>
         <button class="btn btn-success increment-btn" data-food-id="{{ f.food.id }}">+</button>
       </div>
+      <ul class="list-group list-group-horizontal">
+        <li class="list-group-item mt-2 total{{ f.food.id }}">Total : {{ f.total }}</li>
+      </ul>
     </div>
   </div>
   {% endfor %}
@@ -25,20 +28,16 @@
 {% if item %}
 <form
   id="order-form"
-  action="{% url 'add_details' %}"
+  action="{% url "add_details" %}"
   method="post"
   style="text-align: center"
 >
-  <p class="total">Total is</p>
+  <p class="cart_total">Cart Total Rs : {{cart.total}}</p>
   {% csrf_token %}
   <button type="submit" class="btn btn-primary btn-lg mt-5">Place Order</button>
 </form>
 {% else %}
-<div
-  class="d-flex justify-content-center align-items-center"
-  style="height: 100vh"
->
-  <!-- Centering the heading when the cart is empty -->
+<div class="d-flex justify-content-center align-items-center" style="height: 100vh">
   <div class="text-center">
     <h1>Cart is Empty</h1>
   </div>
@@ -59,9 +58,8 @@
           csrfmiddlewaretoken: csrfToken,
         },
         success: function (response) {
-          console.log(response); // Check response from server
           if (response.success) {
-            updateCounter(foodId, response.quantity);
+            updateCounter(foodId, response.quantity,response.cost,response.cart_total);
           }
         },
         error: function (xhr, status, error) {
@@ -83,7 +81,7 @@
         success: function (response) {
           console.log(response); // Check response from server
           if (response.success) {
-            updateCounter(foodId, response.quantity);
+            updateCounter(foodId, response.quantity,response.cost,response.cart_total);
           }
         },
         error: function (xhr, status, error) {
@@ -92,12 +90,7 @@
       });
     });
 
-    function updateCounter(foodId, quantity) {
-      console.log(
-        "Updating counter for food ID " + foodId + " with quantity " + quantity
-      );
-      $(".item" + foodId).text(quantity);
-    }
+    
   });
 </script>
 {% endblock %}

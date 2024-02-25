@@ -8,10 +8,12 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
+    <meta charset="UTF-8">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}?{% now "U" %}" />
-  
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 
     <title>Recipe Website</title>
   </head>
@@ -32,18 +34,18 @@
           <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
             <li class="nav-item">
               <a class="nav-link mx-2 navtext text-light" href="/"
-                ><i class="fas fa-plus-circle pe-2"></i>Home</a
+                ><i class="pe-2"></i>Home</a
               >
             </li>
 
             <li class="nav-item">
               <a class="nav-link mx-2 navtext text-light" href="/cart/"
-                ><i class="fas fa-heart pe-2"></i>Cart</a
+                ><i class=" pe-2"></i>Cart</a
               >
             </li>
             <li class="nav-item">
               <a class="nav-link mx-2 navtext text-light" href="/orders/"
-                ><i class="fas fa-heart pe-2"></i>Orders</a
+                ><i class=" pe-2"></i>Orders</a
               >
             </li>
             <li class="nav-item ms-3">
@@ -67,6 +69,7 @@
         </div>
       </div>
     </nav>
+    <script src="{% static 'js/script.js' %}?"></script>
     {% block start%} {% endblock%}
     <footer class="bg-dark text-light">
       <div class="container py-4">
@@ -95,9 +98,7 @@
         <p>&copy; 2023 Example.com | Designed by Tushar Shaw</p>
       </div>
     </footer>
-    <script src="{% static 'js/script.js' %}"></script>
-  </body>
-  <style>
+    <script src="{% static 'js/script.js' %}?"></script>
     
-  </style>
+  </body>
 </html>

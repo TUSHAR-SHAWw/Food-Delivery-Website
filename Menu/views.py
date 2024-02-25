@@ -82,14 +82,22 @@ def homepage(request):
 @login_required(login_url="/login/")
 def cart(request):
     user = request.user
+    cart = Cart.objects.get(user=request.user)
+    cart_total=cart.cart_total()
+    print(cart_total)
     try:
         cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
     except Cart.DoesNotExist:
         # Create a new Cart object for the user and save it
         new_cart = Cart.objects.create(user=request.user)
+        print(cart_total)
         new_cart.save()
         cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
-    return render(request, 'cart.html', {'item': cart_items})
+    for item in cart_items:
+        item.total=item.food.cost * item.quantity
+        # cart_total= cart_total+item.total
+    context={'item': cart_items,'cart':cart}
+    return render(request, 'cart.html',context )
 
 @login_required(login_url="/login/")
 def orders(request):
@@ -105,26 +113,21 @@ def orders(request):
 # CSRF-exempt decorator is used to allow AJAX requests without CSRF tokens
 @csrf_exempt
 def decrement_quantity(request):
-    # Check if the request method is POST
     if request.method == 'POST':
-        # Retrieve the food ID from the POST data
         food_id = request.POST.get('food_id')
         if food_id:
             try:
-                # Get the Food object based on the food ID
                 food_item = Food.objects.get(pk=food_id)
-                # Get the corresponding CartItem for the food item in the user's cart
                 cart_item = CartItem.objects.get(food=food_item, cart=request.user.cart)
-                # If the quantity is greater than 0, decrement the quantity by 1
                 if cart_item.quantity > 0:
                     cart_item.quantity -= 1
-                    # Save the updated cart item
                     cart_item.save()
-                    # Return a JSON response indicating success along with the updated quantity
-                    return JsonResponse({'success': True, 'food_id': food_id, 'quantity': cart_item.quantity})
+                    cost=food_item.cost
+                    cart = Cart.objects.get(user=request.user)
+                    cart_total=cart.cart_total()
+                    return JsonResponse({'success': True, 'food_id': food_id, 'quantity': cart_item.quantity,'cost':cost,'cart_total':cart_total })
             except (Food.DoesNotExist, CartItem.DoesNotExist):
                 pass
-    # If the request method is not POST or an error occurs, return a JSON response indicating failure
     return JsonResponse({'success': False})
 
 
@@ -134,18 +137,16 @@ def increment_quantity(request):
     if request.method == 'POST':
         # Retrieve the food ID from the POST data
         food_id = request.POST.get('food_id')
+        food_item=Food.objects.get(pk=food_id)
         if food_id:
             try:
-                # Get the Food object based on the food ID
-                food_item = Food.objects.get(pk=food_id)
-                # Get or create the CartItem for the food item in the user's cart
                 cart_item, created = CartItem.objects.get_or_create(food=food_item, cart=request.user.cart)
-                # Increment the quantity by 1
                 cart_item.quantity += 1
-                # Save the updated cart item
                 cart_item.save()
-                # Return a JSON response indicating success along with the updated quantity
-                return JsonResponse({'success': True, 'food_id': food_id, 'quantity': cart_item.quantity})
+                cost=food_item.cost
+                cart = Cart.objects.get(user=request.user)
+                cart_total=cart.cart_total()
+                return JsonResponse({'success': True, 'food_id': food_id, 'quantity': cart_item.quantity,'cost':cost,'cart_total':cart_total })
             except Food.DoesNotExist:
                 pass
     # If the request method is not POST or an error occurs, return a JSON response indicating failure

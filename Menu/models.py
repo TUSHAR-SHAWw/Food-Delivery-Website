@@ -58,15 +58,26 @@ class OrderItem(models.Model):
 
     def calculate_item_total(self):
         return self.food.cost * self.quantity
+
     
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     items = models.ManyToManyField(Food, through='CartItem')
-
+    total = models.FloatField(default=0)
+    
     def __str__(self):
         return f"Cart for {self.user.username}"
+    
+    def cart_total(self):
+        total = round(sum(item.cart_item_total() for item in self.cart_items.all()),2)
+        if self.total != total:  # Check if the total has changed
+            self.total = total
+            self.save()  # Save the Cart instance only if the total has changed
+        return total
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE,related_name='cart_items')
     food = models.ForeignKey(Food, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
+    def cart_item_total(self):
+        return self.food.cost * self.quantity
