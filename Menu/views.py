@@ -72,7 +72,7 @@ def Menu(request,id):
     foods=Food.objects.filter(restaurant__id=id)
     restaurant=Restaurant.objects.filter(id=id)#only for the restaurant card
     restaurant=restaurant[0]#only for the restaurant card
-    category=Category.objects.all()
+    category=Category.objects.all().distinct()
     cart_items = {}
     user = request.user
     if user.is_authenticated:
