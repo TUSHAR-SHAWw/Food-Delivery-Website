@@ -31,23 +31,37 @@ def create_categories():
         category.save()
 
 
-def create_foods(num):
+def create_foods(num_per_restaurant):
     if not Category.objects.exists():
-        create_categories()  # Create 5 random categories if none exist
+        create_categories()  # Create categories if none exist
 
     if not Restaurant.objects.exists():
-        create_restaurants()  # Create 3 random restaurants if none exist
+        create_restaurants()  # Create restaurants if none exist
 
     restaurants = Restaurant.objects.all()
     categories = Category.objects.all()
-    for _ in range(num):
-        restaurant = random.choice(restaurants)
-        name = fake.name()
-        category = random.choice(categories)
-        cost = round(random.uniform(5, 50), 2)
-        image = 'food_images/default.jpg'  # Default image path
-        food = Food.objects.create(restaurant=restaurant, name=name, catagory=category, cost=cost, image=image)
-        food.save()
+
+    food_names = {
+        "Fish": ["Grilled Fish", "Fish Curry", "Fish Fry", "Fish Tikka", "Fish Tandoori", "Fish Masala", "Fish Biriyani", "Fish Cutlet", "Fish Kebab", "Fish Pakora"],
+        "Rice": ["Biryani", "Fried Rice", "Pulao", "Vegetable Rice", "Lemon Rice", "Coconut Rice", "Tamarind Rice", "Tomato Rice", "Mushroom Rice", "Peas Pulao"],
+        "Chicken": ["Chicken Tikka", "Butter Chicken", "Chicken Curry", "Chicken Kebab", "Chicken Biryani", "Chicken Shawarma", "Chicken Tandoori", "Chicken 65", "Chicken Manchurian", "Chicken Lollipop"],
+        "Mutton": ["Mutton Curry", "Mutton Biryani", "Mutton Korma", "Mutton Rogan Josh", "Mutton Fry", "Mutton Stew", "Mutton Chops", "Mutton Pulao", "Mutton Kabab", "Mutton Paya"],
+        "Veg": ["Paneer Tikka", "Veg Biryani", "Mixed Veg Curry", "Vegetable Stir Fry", "Aloo Gobi", "Palak Paneer", "Vegetable Korma", "Bhindi Masala", "Dal Fry", "Chana Masala"],
+        "Paratha": ["Aloo Paratha", "Gobi Paratha", "Paneer Paratha", "Methi Paratha", "Onion Paratha", "Palak Paratha", "Cheese Paratha", "Mooli Paratha", "Sweet Paratha", "Kheema Paratha"],
+        "Non-veg": ["Egg Curry", "Egg Fried Rice", "Egg Bhurji", "Chicken Lollipop", "Egg Biryani", "Chicken Fry", "Chicken Pulao", "Egg Masala", "Chicken Roast", "Chicken Liver Fry"]
+    }
+
+    for restaurant in restaurants:
+        for _ in range(num_per_restaurant):
+            category = random.choice(categories)
+            name = random.choice(food_names[category.catagory])
+            cost = round(random.uniform(5, 50), 2)
+            # Relative path to the image folder
+            image_folder = 'food_images'
+            default_image = os.path.join(image_folder, f"{category.catagory}.jpg")
+            food = Food.objects.create(restaurant=restaurant, name=name, catagory=category, cost=cost, image=default_image)
+            food.save()
+
 
 def reset():
     Food.objects.all().delete()

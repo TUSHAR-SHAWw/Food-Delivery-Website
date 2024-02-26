@@ -13,9 +13,7 @@
           id="stars_{{ restaurant.id }}"
         ></span>
         <script>
-          document.getElementById("stars_{{ restaurant.id }}").innerHTML = convertToStars({{ restaurant.rating }});
-          
-          
+          document.getElementById("stars_{{ restaurant.id }}").innerHTML = convertToStars({{ restaurant.rating }});    
         </script>
       </div>
 
@@ -48,27 +46,30 @@
   {% endfor %}
 </div>
 
-  <div class="row d-flex justify-content-center ">
+  <div class="container d-flex mt-5 flex-wrap ">
         {% for food in foods %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mt-4 mb-4">
-            <div class="card shadow" style="width: 18rem">
-              <img src="{{ food.image.url }}" class="img-thumbnail" alt="..." />
-              <div class="card-body text-center">
-                <h5 class="card-title">{{ food.name }}</h5>
-                <p class="card-text">Rs: {{ food.cost }}{{food.catagory}}</p>
-                <div class="d-flex justify-content-center">
-                  {% csrf_token %}
-                  <button class="btn btn-danger decrement-btn" data-food-id="{{ food.id }}">-</button>
-                  <ul class="list-group list-group-horizontal">
-                    <li class="list-group-item item{{ food.id }}">
-                      {{ cart_items|get_item:food.id|default:"0" }}
-                    </li>
-                </ul>
-                  <button class="btn btn-success increment-btn" data-food-id="{{ food.id }}">+</button>
-              </div>
+        <div class="card cards mt-2 mx-2">
+          <img
+            src="{{ food.image.url }}"
+            alt="Food image"
+            class="img-thumbnail"/>
+        
+        <div class="card-body mx-2">
+          <h5 class="card-title">{{ food.name }}</h5>
+          <p class="card-text">Rs : {{ food.cost }}</p>
+          <p class="card-text">{{ food.catagory }}</p>
+          <div class="d-flex">
+            <button class="btn btn-danger decrement-btn" data-food-id="{{ food.id }}">-</button>
+            <ul class="list-group list-group-horizontal">
+              <li class="list-group-item item{{ food.id }}">
+                {{ cart_items|get_item:food.id|default:"0" }}
+              </li>
+            </ul>
+            <button class="btn btn-success increment-btn" data-food-id="{{ food.id }}">+</button>
           </div>
         </div>
       </div>
+      
       {% endfor %}
   </div>
 
