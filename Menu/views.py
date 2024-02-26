@@ -56,6 +56,19 @@ def register(request):
 
 @login_required(login_url="/login/")
 def Menu(request,id):
+    user = request.user
+    try:
+        cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
+        cart = Cart.objects.get(user=request.user)
+        cart.cart_total()
+    except Cart.DoesNotExist:
+        # Create a new Cart object for the user and save it
+        new_cart = Cart.objects.create(user=request.user)
+        orderInfo = OrderInfo.objects.create(customer=request.user)
+        orderInfo2 = OrderInfo.objects.create(customer=request.user)
+        new_cart.save()
+        orderInfo2.save()
+        orderInfo.save()
     foods=Food.objects.filter(restaurant__id=id)
     restaurant=Restaurant.objects.filter(id=id)#only for the restaurant card
     restaurant=restaurant[0]#only for the restaurant card
@@ -82,17 +95,21 @@ def homepage(request):
 @login_required(login_url="/login/")
 def cart(request):
     user = request.user
-    cart = Cart.objects.get(user=request.user)
-    cart_total=cart.cart_total()
-    print(cart_total)
     try:
         cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
+        cart = Cart.objects.get(user=request.user)
+        cart.cart_total()
     except Cart.DoesNotExist:
         # Create a new Cart object for the user and save it
         new_cart = Cart.objects.create(user=request.user)
-        print(cart_total)
+        orderInfo = OrderInfo.objects.create(customer=request.user)
+        orderInfo2 = OrderInfo.objects.create(customer=request.user)
         new_cart.save()
+        orderInfo2.save()
+        orderInfo.save()
         cart_items = CartItem.objects.filter(cart__user=user,quantity__gt=0)
+    cart = Cart.objects.get(user=request.user)
+    cart.cart_total()
     for item in cart_items:
         item.total=item.food.cost * item.quantity
         # cart_total= cart_total+item.total

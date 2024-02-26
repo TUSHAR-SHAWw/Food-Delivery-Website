@@ -11,7 +11,7 @@ def create_restaurants():
     for name in names:
         address = fake.address()
         description = fake.text(max_nb_chars=200)
-        rating = round(random.uniform(1, 5), 1)
+        rating = round(random.uniform(3, 5), 1)
         image_file = random.choice(os.listdir(image_folder_path))
         image_path = os.path.join(image_folder_path, image_file)
         restaurant = Restaurant.objects.create(name=name, address=address, description=description, rating=rating, image=image_path)

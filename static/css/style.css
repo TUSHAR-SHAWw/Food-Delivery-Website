@@ -26,3 +26,8 @@ body{
   color: gold; /* Set the color to gold */
   font-size: 24px; /* Set the font size to make the stars larger */
 }
+@media screen and (max-width: 768px) {
+  
+  
+  
+}

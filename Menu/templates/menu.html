@@ -1,40 +1,58 @@
 {% extends "base.html" %} {% block start %} {% csrf_token %}
 {% load custom_filters %}
-<div class="container py-5">
-    <div class="row d-flex justify-content-center">
-      <div class="card col-6 mx-auto" style="width: 18rem">
-        <img src="{{ restaurant.image.url }}" class="card-img-top" alt="{{ restaurant.image }}" />
-        <div class="card-body">
-          <h5 class="card-title">{{ restaurant.name }}</h5>
-          <p class="card-text">{{ restaurant.description }}</p>
-        </div>
+<div class="container d-flex flex-wrap mt-5">
+  <div class="card mb-2 mx-2">
+    <img src="{{restaurant.image.url}}" class="card-img-top" alt="..." />
+    <div class="card-body mx-2">
+      <h5 class="card-title mb-2 fs-2">{{restaurant.name}}</h5>
+      <p class="card-text">{{restaurant.description}}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <p class="text-dark mb-0 fs-5">Ratings: {{ restaurant.rating }}</p>
+        <span
+          class="star-rating me-2 mb-1"
+          id="stars_{{ restaurant.id }}"
+        ></span>
+        <script>
+          document.getElementById("stars_{{ restaurant.id }}").innerHTML = convertToStars({{ restaurant.rating }});
+          
+          
+        </script>
+      </div>
+
+      <div class='mt-2'>
+        <i class="fa-solid fa-location-crosshairs"></i> {{restaurant.address}}
+      </div>
+      </div>
     </div>
   </div>
+ 
 </div>
-<div class="container rounded-4 p-3 bg-warning d-flex no-wrap mt-4 justify-content-evenly">
-  <button class=" btn btn-lg border border-secondary-subtle  btn-light">Filters:</button>
+
+<div class="container rounded-4 p-3 bg-warning d-flex flex-wrap justify-content-evenly mt-4">
+  <button class="btn btn-lg border border-secondary-subtle btn-light mb-2">Filters:</button>
   <form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="category_id" value="">
-  <button class="btn btn-success btn-lg border border-light border-4 text-light mx-2" type=submit>
-    All
-  </button>
-</form>
-  {% for c in category%}
+      {% csrf_token %}
+      <input type="hidden" name="category_id" value="">
+      <button class="btn btn-success btn-lg border border-light border-4 text-light mx-2 mb-2" type="submit">
+          All
+      </button>
+  </form>
+  {% for c in category %}
   <form method="post">
-    {% csrf_token %}
-    <input type="hidden" name="category_id" value="{{ c }}">
-  <button class="btn btn-success btn-lg border border-light border-4 text-light mx-2" type=submit>
-    {{c}}
-  </button>
-</form>
-  {%endfor%}
+      {% csrf_token %}
+      <input type="hidden" name="category_id" value="{{ c }}">
+      <button class="btn btn-success btn-lg border border-light border-4 text-light mx-2 mb-2" type="submit">
+          {{ c }}
+      </button>
+  </form>
+  {% endfor %}
 </div>
-  <div class="row d-flex justify-content-center">
+
+  <div class="row d-flex justify-content-center ">
         {% for food in foods %}
-          <div class="col-lg-3 col-md-4 col-sm-6 mt-4">
+          <div class="col-lg-3 col-md-4 col-sm-6 mt-4 mb-4">
             <div class="card shadow" style="width: 18rem">
-              <img src="{{ food.image.url }}" class="card-img-top" alt="..." />
+              <img src="{{ food.image.url }}" class="img-thumbnail" alt="..." />
               <div class="card-body text-center">
                 <h5 class="card-title">{{ food.name }}</h5>
                 <p class="card-text">Rs: {{ food.cost }}{{food.catagory}}</p>
@@ -53,7 +71,7 @@
       </div>
       {% endfor %}
   </div>
-</div>
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function() {
