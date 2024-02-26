@@ -6,15 +6,22 @@ from django.conf import settings
 fake = Faker()
 
 def create_restaurants():
-    names = ["Taj Mahal Indian Restaurant","Spice Route","Curry House","Masala Kitchen","Namaste India"]
+    names = ["Taj Mahal Indian Restaurant", "Spice Route", "Curry House", "Masala Kitchen", "Namaste India"]
     image_folder_path = os.path.join(settings.BASE_DIR, 'media/restaurant_images')
-    for name in names:
+    image_files = os.listdir(image_folder_path)
+    num_images = len(image_files)
+    for i, name in enumerate(names):
         address = fake.address()
         description = fake.text(max_nb_chars=200)
         rating = round(random.uniform(3, 5), 1)
-        image_file = random.choice(os.listdir(image_folder_path))
-        image_path = os.path.join(image_folder_path, image_file)
-        restaurant = Restaurant.objects.create(name=name, address=address, description=description, rating=rating, image=image_path)
+        image_file_name = image_files[i % num_images]  # Ensure cycling through available images
+        image_path = f'restaurant_images/{image_file_name}'  # Relative path to the image
+        restaurant = Restaurant.objects.create(
+            name=name, 
+            address=address, 
+            description=description, 
+            rating=rating, 
+            image=image_path)
         restaurant.save()
 
 def create_categories():
