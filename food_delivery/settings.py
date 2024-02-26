@@ -75,10 +75,10 @@ WSGI_APPLICATION = 'food_delivery.wsgi.application'
 DATABASES = {
  	'default': {
  		'ENGINE': 'django.db.backends.postgresql',
-		'NAME': 'bgavxenjvmuwsvak7il1',
-		'USER': 'u3xrwcldllmdkiqxd1rm',
-		'PASSWORD': 'ziRHROXHZX9fhbyOYs8Af65j7Y0QtN',
-		'HOST':'bgavxenjvmuwsvak7il1-postgresql.services.clever-cloud.com',
+		'NAME': 'bp44ls2f8bdohg864frk',
+		'USER': 'use2b8nvggpfhslrm9vg',
+		'PASSWORD': 'bOHMPoCzp1dQUTViL1UU6a0XcHQzWi',
+		'HOST':'bp44ls2f8bdohg864frk-postgresql.services.clever-cloud.com',
  	    'PORT':'50013',
  	}
 }
