@@ -15,50 +15,47 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
 
-    <title>Recipe Website</title>
+    <title>Food Delivery</title>
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-lg bg-dark navbar-light">
-      <div class="container d-flex justify-content-between">
-        <a class="navbar-brand" href="/recipe/"
-          ><img
-            id="logo"
+    <nav class="navbar navbar-expand-lg bg-dark navbar-light fixed-top">
+      <div class="container d-flex justify-content-between flex-nowrap">
+        <a class="navbar-brand" href="/"
+          ><img id="logo" class="logo"
             src="{% static 'css/logoo.png' %}"
-            alt="Logo"
-            draggable="false"
-            height="30"
+            alt="Logo"draggable="false" height="80"
         /></a>
 
         <div class="navbar" id="navbarSupportedContent">
           <ul class="navbar-nav ms-auto d-flex flex-row align-items-center">
             <li class="nav-item">
-              <a class="nav-link mx-2 navtext text-light" href="/"
-                ><i class="pe-2"></i>Home</a
+              <a class="nav-link mx-1 navtext text-light fss-5" href="/"
+                ><i class="pe-2 "></i>Home</a
               >
             </li>
 
             <li class="nav-item">
-              <a class="nav-link mx-2 navtext text-light" href="/cart/"
-                ><i class=" pe-2"></i>Cart</a
+              <a class="nav-link mx-1 navtext text-light fss-5" href="/cart/"
+                ><i class=" pe-2 "></i>Cart</a
               >
             </li>
             <li class="nav-item">
-              <a class="nav-link mx-2 navtext text-light" href="/orders/"
-                ><i class=" pe-2"></i>Orders</a
+              <a class="nav-link mx-1 navtext text-light fss-5" href="/orders/"
+                ><i class=" pe-2 "></i>Orders</a
               >
             </li>
             <li class="nav-item ms-3">
               <form class="form-inline" method="POST">
                 {%if request.user.is_authenticated %}
                 <a
-                  class="btn btn-success navtext text-decoration-none"
+                  class="btn btn-success navtext text-decoration-none fss-5"
                   href="/logout/"
                   >Logout</a
                 >
                 {% else %}
                 <a
-                  class="btn btn-success navtext text-decoration-none"
+                  class="btn btn-success navtext text-decoration-none fs-5"
                   href="/login/"
                   >Login</a
                 >

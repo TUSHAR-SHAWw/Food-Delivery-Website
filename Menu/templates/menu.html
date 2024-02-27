@@ -1,6 +1,6 @@
 {% extends "base.html" %} {% block start %} {% csrf_token %}
 {% load custom_filters %}
-<div class="container d-flex flex-wrap mt-5">
+<div class="container d-flex flex-wrap mt">
   <div class="card mb-2 mx-2">
     <img src="{{restaurant.image.url}}" class="card-img-top" alt="..." />
     <div class="card-body mx-2">
@@ -57,7 +57,10 @@
         <div class="card-body mx-2">
           <h5 class="card-title">{{ food.name }}</h5>
           <p class="card-text">Rs : {{ food.cost }}</p>
-          <p class="card-text">{{ food.catagory }}</p>
+          <p id='catagory{{food.id}}' class="card-text">{{ food.catagory }}</p>
+        <script>
+          document.getElementById("catagory{{food.id}}").innerHTML = convertToicon('{{ food.catagory }}');
+        </script>
           <div class="d-flex">
             <button class="btn btn-danger decrement-btn" data-food-id="{{ food.id }}">-</button>
             <ul class="list-group list-group-horizontal">
@@ -71,8 +74,10 @@
       </div>
       
       {% endfor %}
-  </div>
+      <button class="cart-button fs-4"><a href='/cart/'>Cart</a> </button>
 
+  </div>
+  <script src="https://kit.fontawesome.com/d256aec9f7.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function() {

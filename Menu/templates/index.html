@@ -1,5 +1,5 @@
 {% extends "base.html" %} {% block start %}
-<div class="container d-flex flex-wrap mt-5">
+<div class="container d-flex flex-wrap mt index">
   {% for restaurant in restaurants %}
   <div class="card mb-2 mx-2">
     <img src="{{restaurant.image.url}}" class="card-img-top" alt="..." />
@@ -33,5 +33,6 @@
   </div>
   {% endfor %}
 </div>
+<button class="cart-button fs-4"><a href='/cart/'>Cart</a> </button>
 <div class="filler-container" style="flex: 1; height: 400px"></div>
 {% endblock %}

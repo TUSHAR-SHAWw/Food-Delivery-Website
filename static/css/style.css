@@ -26,8 +26,71 @@ body{
   color: gold; /* Set the color to gold */
   font-size: 24px; /* Set the font size to make the stars larger */
 }
-@media screen and (max-width: 768px) {
-  
-  
+.logo{
+  margin: 0;
+  padding: 0;
+  vertical-align: auto;
+}
+.navbar{
+  padding: 0%;
   
 }
+.mt{
+  margin-top: 8rem;
+}
+.fss-5{
+  font-size: 1.3rem;
+}
+a{
+  text-decoration: none;
+  color: #fff;
+}
+.cart-button {
+  position: fixed; /* Position the button relative to the viewport */
+  bottom: 3rem; /* Distance from the bottom of the viewport */
+  right: 5rem; /* Distance from the right of the viewport */
+  display: inline-block;
+  width: 6rem; /* Adjust the width and height as needed */
+  height: 6rem;
+  border-radius: 50%; /* This makes the button round */
+  background-color: #fa9200; /* Button background color */
+  text-decoration: none;
+  color: #fff; /* Button text color */
+  border: none; /* Remove button border */
+  cursor: pointer; /* Show cursor as pointer on hover */
+}
+.index{
+  width:54%;
+}
+@media screen and (max-width: 768px) {
+  .logo{
+    height: 60px;
+  }
+  .index{
+    width:94%;
+  }
+  .navtext{
+    font-size: 1rem;
+  }
+  .fss-5{
+    font-size: 1rem;
+  }
+  .mt{
+    margin-top: 5rem;
+  }
+  .cart-button {
+    position: fixed; /* Position the button relative to the viewport */
+    bottom: 2rem; /* Distance from the bottom of the viewport */
+    right: 2rem; /* Distance from the right of the viewport */
+    display: inline-block;
+    width: 5rem; /* Adjust the width and height as needed */
+    height: 5rem;
+    border-radius: 50%; /* This makes the button round */
+    background-color: #fa9200; /* Button background color */
+    color: #fff; /* Button text color */
+    border: none; /* Remove button border */
+    cursor: pointer; /* Show cursor as pointer on hover */
+  } 
+  
+}
+
