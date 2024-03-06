@@ -34,6 +34,7 @@
 >
   <p class="cart_total">Cart Total Rs : {{cart.total}}</p>
   {% csrf_token %}
+  <div class="filler-container" style="flex: 1; height: 200px"></div>
   <button type="submit" class="btn btn-primary btn-lg mt-5">Place Order</button>
 </form>
 {% else %}
@@ -43,7 +44,6 @@
   </div>
 </div>
 {% endif %}
-<div class="filler-container" style="flex: 1; height: 200px"></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function () {

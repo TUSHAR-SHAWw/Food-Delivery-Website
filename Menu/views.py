@@ -87,6 +87,9 @@ def Menu(request,id):
     return render(request,'menu.html',foods,)
 
 
+def about(request):
+    return render(request,'about.html')
+
 def homepage(request):
     restaurants=Restaurant.objects.all()
     restaurants={'restaurants':restaurants}
@@ -258,6 +261,14 @@ class OrderForm(forms.ModelForm):
 
 @login_required(login_url="/login/")
 def edit_order(request, order_id):
+    """
+    A view function to edit an existing order, requiring login authentication. 
+    Parameters:
+        request: HttpRequest object
+        order_id: ID of the order to be edited
+    Returns:
+        HttpResponse object
+    """
     order = get_object_or_404(OrderInfo, pk=order_id)
     if request.method == 'POST':
         form = OrderForm(request.POST, instance=order)
@@ -267,3 +278,4 @@ def edit_order(request, order_id):
     else:
         form = OrderForm(instance=order)
     return render(request, 'edit_order.html', {'form': form})
+

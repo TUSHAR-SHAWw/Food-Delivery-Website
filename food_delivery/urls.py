@@ -30,6 +30,7 @@ urlpatterns = [
     path('increment_url/',increment_quantity,name='increment_url'),
     path('decrement_url/',decrement_quantity,name='decrement_url'),
 
+    path('about/',about,name='about'),
     path('create_order/',create_order,name='create_order'),
     path('orders/',orders,name='orders'),
     path('order_details/<id>',order_details,name='order_details'),
